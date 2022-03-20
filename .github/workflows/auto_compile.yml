@@ -26,7 +26,7 @@ on:
       TOOLCHAIN_DIR:
         description: 'TOOLCHAIN_DIR'
         required: true
-        default: 'proton-clang-20210522'
+        default: 'linux-x86/clang-r445002'
       USEDEFCONFIG:
         description: 'USEDEFCONFIG'
         required: true
@@ -35,9 +35,6 @@ on:
         description: 'COMPILE_SET'
         required: false
         default: ''
-
-env:
-  CLANG_VER: '20210522-proton'
 
 jobs:
   ready_compile_env:
@@ -50,7 +47,7 @@ jobs:
       with:
         path: |
           ${{ github.workspace }}/${{ github.event.inputs.TOOLCHAIN_DIR }}
-        key: ${{ runner.os }}-${{ github.event.inputs.TOOLCHAIN_DIR }}/${{ env.CLANG_VER }}
+        key: ${{ runner.os }}-${{ github.event.inputs.TOOLCHAIN_DIR }}
     - name: cacheKernel
       id: cacheKernel
       uses: actions/cache@v2
@@ -67,8 +64,7 @@ jobs:
     - name: Clone Clang
       if: steps.cacheClang.outputs.cache-hit != 'true'
       run: |
-        wget https://github.com/kdrag0n/proton-clang/archive/refs/tags/20210522.zip -q
-        unzip ./20210522.zip
+        git clone https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86 --depth=1
         chmod -R 777 ${{ github.workspace }}/${{ github.event.inputs.TOOLCHAIN_DIR }}
 
     - name: Clone Kernel Code
@@ -94,7 +90,7 @@ jobs:
 
         make O=out ${{ github.event.inputs.USEDEFCONFIG }}
         
-        make -j32 O=out \
+        make -j$(nproc --all) O=out \
         AR=${{ github.workspace }}/${{ github.event.inputs.TOOLCHAIN_DIR }}/bin/llvm-ar \
         NM=${{ github.workspace }}/${{ github.event.inputs.TOOLCHAIN_DIR }}/bin/llvm-nm \
         OBJCOPY=${{ github.workspace }}/${{ github.event.inputs.TOOLCHAIN_DIR }}/bin/llvm-objcopy \
