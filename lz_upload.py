@@ -32,3 +32,6 @@ if(find_actions==None):
 
 # upload 
 lzcloud.upload_file(folder_id=fid,file_path=sys.argv[3])
+
+# logout
+lzcloud.logout()
