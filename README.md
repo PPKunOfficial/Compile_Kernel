@@ -1,3 +1,4 @@
+[Jump to English(Chinglish](https://github.com/PPKunOfficial/Compile_Kernel/blob/main/README_EN.md)
 # 内核编译
 ## 使用Github Actions来编译你的内核源码
 
