@@ -9,7 +9,7 @@ In order to speed up the speed of pulling code, in the workflow files uses `chec
 As a result, you can only pull the source code in GitHub, not the external one. If necessary, the version pulled by `git clone` will be released later
 
 ## Parameter interpretation
-| Parameter name | Parameter description | 范例 |
+| Parameter name | Parameter description | Example |
 | ------------ | -------------------- | ------------ |
 | `AUTHOR` | The author of the repo | PPKunOfficial |
 | `CHECKOUT_REPO` | Repository to pull | android_kernel_xiaomi_sdm845 |
