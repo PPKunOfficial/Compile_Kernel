@@ -14,11 +14,11 @@ on:
       CHECKOUT_BRANCH:
         description: '需要拉取的分支'
         required: true
-        default: 'rebase-s'
+        default: 'lineage-19.1'
       USEDEFCONFIG:
         description: '使用的defconfig'
         required: true
-        default: 'dipper_defconfig'
+        default: 'dipper_defconfig_XPH'
       USE_LANZOU:
         description: '是否上传到蓝奏云'
         required: true
