@@ -1,26 +1,26 @@
-name: "编译内核"
+name: "使用proton编译器编译内核"
 
 on:
   workflow_dispatch:
     inputs:
       AUTHOR:
-        description: 'AUTHOR'
+        description: 'GitHub用户名'
         required: true
         default: 'PPKunOfficial'   
       CHECKOUT_REPO:
-        description: 'CHECKOUT_REPO'
+        description: '需要拉取的仓库'
         required: true
         default: 'android_kernel_xiaomi_sdm845'
       CHECKOUT_BRANCH:
-        description: 'CHECKOUT_BRANCH'
+        description: '需要拉取的分支'
         required: true
         default: 'rebase-s'
       USEDEFCONFIG:
-        description: 'USEDEFCONFIG'
+        description: '使用的defconfig'
         required: true
         default: 'dipper_defconfig'
       USE_LANZOU:
-        description: 'USE_LANZOU'
+        description: '是否上传到蓝奏云'
         required: true
         default: '0'
       LANZOU_COOKIE_YLOGIN:
@@ -39,8 +39,8 @@ env:
   COMPILE_THREAD: '32' # $(nproc --all) cpu核心数
 
 jobs:
-  kernel:
-    name: 编译内核
+  proton:
+    name: 使用proton编译器编译内核
     runs-on: ubuntu-latest
     steps:
     - name: cacheClang
