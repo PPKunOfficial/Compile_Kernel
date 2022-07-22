@@ -47,6 +47,11 @@ jobs:
         version: latest
         platform: x64
 
+    - name: 拉取模板
+      uses: actions/checkout@v3
+      with:
+        path: repos
+
     - name: Set up crossc
       run: |
-        sudo bash setup_enviroment.sh
+        sudo bash repos/setup_enviroment.sh
