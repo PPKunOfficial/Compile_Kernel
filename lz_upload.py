@@ -3,20 +3,13 @@ from re import S
 from lanzou.api import LanZouCloud
 import sys,re
 
-# login data
-def reComArgv():
-    first=sys.argv[1]
-    sec=sys.argv[2]
-    my_re = re.compile(r'[A-Za-z]',re.S)
-    res=re.findall(my_re,first)
-    if len(res):
-        return [sec,first]
-    else:
-        return [first,sec]
+first=sys.argv[1]
+sec=sys.argv[2]
+
 
 login_cookie={
-    "ylogin":reComArgv()[0],
-    "phpdisk_info":reComArgv()[1]
+    "ylogin":first,
+    "phpdisk_info":sec
 }
 
 # login

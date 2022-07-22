@@ -1,4 +1,4 @@
-name: "使用新版clang编译内核"
+name: "使用系统源编译器编译内核"
 
 on:
   workflow_dispatch:
@@ -10,11 +10,11 @@ on:
       CHECKOUT_REPO:
         description: '需要拉取的仓库'
         required: true
-        default: 'android_kernel_xiaomi_sdm845'
+        default: 'xiaomi_kernel_dipper'
       CHECKOUT_BRANCH:
         description: '需要拉取的分支'
         required: true
-        default: 'rebase-s'
+        default: 'a11'
       USEDEFCONFIG:
         description: '使用的defconfig'
         required: true
@@ -33,24 +33,15 @@ on:
         default: ''
 
 env:
-  CLANG_VER: 'proton-clang'
   ARCHOSUB: 'arm64'
   KERNEL_DIR: 'kernel_source'
-  COMPILE_THREAD: '32' # $(nproc --all) cpu核心数
+  COMPILE_THREAD: '$(nproc --all)' # $(nproc --all) cpu核心数
 
 jobs:
-  newclang:
-    name: 使用新版clang编译内核
+  proton:
+    name: 用系统源编译器编译内核
     runs-on: ubuntu-latest
     steps:
-    - name: cacheClang
-      id: cacheClang
-      uses: actions/cache@v2
-      with:
-        path: |
-          ${{ github.workspace }}/${{ env.CLANG_VER }}
-        key: ${{ runner.os }}/${{ env.CLANG_VER }}
-
     - name: 获取时间
       id: get_time
       run: |
@@ -71,58 +62,36 @@ jobs:
     - name: 准备编译环境
       run: |
         sudo apt update -y
-        sudo apt install -y git wget unzip p7zip-full git 
-        sudo apt install bc \
-            binutils-dev \
-            bison \
-            build-essential \
-            ca-certificates \
-            ccache \
-            clang \
-            cmake \
-            curl \
-            file \
-            flex \
-            git \
-            libelf-dev \
-            libssl-dev \
-            lld \
-            make \
-            ninja-build \
-            python3-dev \
-            texinfo \
-            u-boot-tools \
-            xz-utils \
-            zlib1g-dev
-        
+        sudo apt install -y git wget unzip p7zip-full git
+        sudo bash setup_enviroment.sh
+
     - name: 编译中
       run: |
         cd ${{ github.workspace }}/${{ env.KERNEL_DIR}}
         export ARCH=${{ env.ARCHOSUB}}
-        export AR=${{ github.workspace }}/${{ env.CLANG_VER }}/bin/llvm-ar
-        export NM=${{ github.workspace }}/${{ env.CLANG_VER }}/bin/llvm-nm
-        export OBJCOPY=${{ github.workspace }}/${{ env.CLANG_VER }}/bin/llvm-objcopy
-        export OBJDUMP=${{ github.workspace }}/${{ env.CLANG_VER }}/bin/llvm-objdump
-        export STRIP=${{ github.workspace }}/${{ env.CLANG_VER }}/bin/llvm-strip
+        export AR=llvm-ar
+        export NM=llvm-nm
+        export OBJCOPY=llvm-objcopy
+        export OBJDUMP=llvm-objdump
+        export STRIP=llvm-strip
         export SUBARCH=${{ env.ARCHOSUB}}
-        export CC=${{ github.workspace }}/${{ env.CLANG_VER }}/bin/clang
-        export CROSS_COMPILE=${{ github.workspace }}/${{ env.CLANG_VER }}/bin/aarch64-linux-gnu-
-        export CROSS_COMPILE_ARM32=${{ github.workspace }}/${{ env.CLANG_VER }}/bin/arm-linux-gnueabi-
-        export PATH="${{ github.workspace }}/${{ env.CLANG_VER }}/bin:$PATH"
+        export CC=clang
+        export CROSS_COMPILE=aarch64-linux-gnu-
+        export CROSS_COMPILE_ARM32=arm-linux-gnueabi-
 
         make O=out ${{ github.event.inputs.USEDEFCONFIG }}
 
         make -j${{ env.COMPILE_THREAD }} O=out \
-        AR=${{ github.workspace }}/${{ env.CLANG_VER }}/bin/llvm-ar \
-        NM=${{ github.workspace }}/${{ env.CLANG_VER }}/bin/llvm-nm \
-        OBJCOPY=${{ github.workspace }}/${{ env.CLANG_VER }}/bin/llvm-objcopy \
-        OBJDUMP=${{ github.workspace }}/${{ env.CLANG_VER }}/bin/llvm-objdump \
-        STRIP=${{ github.workspace }}/${{ env.CLANG_VER }}/bin/llvm-strip \
+        AR=llvm-ar \
+        NM=llvm-nm \
+        OBJCOPY=llvm-objcopy \
+        OBJDUMP=llvm-objdump \
+        STRIP=llvm-strip \
         ARCH=${{ env.ARCHOSUB}} \
         SUBARCH=${{ env.ARCHOSUB}} \
-        CC=${{ github.workspace }}/${{ env.CLANG_VER }}/bin/clang \
-        CROSS_COMPILE=${{ github.workspace }}/${{ env.CLANG_VER }}/bin/aarch64-linux-gnu- \
-        CROSS_COMPILE_ARM32=${{ github.workspace }}/${{ env.CLANG_VER }}/bin/arm-linux-gnueabi- \
+        CC=clang \
+        CROSS_COMPILE=aarch64-linux-gnu- \
+        CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
         ${{ github.event.inputs.COMPILE_SET }}
 
     - name: 打包内核
