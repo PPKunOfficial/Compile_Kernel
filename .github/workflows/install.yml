@@ -1,4 +1,4 @@
-name: "使用系统源编译器编译内核"
+name: "安装环境"
 
 on:
   workflow_dispatch:
@@ -11,7 +11,7 @@ env:
 
 jobs:
   proton:
-    name: 用系统源编译器编译内核
+    name: 安装环境
     runs-on: ubuntu-latest
     steps:
     - name: Set up Clang
