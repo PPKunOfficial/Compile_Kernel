@@ -63,7 +63,10 @@ jobs:
       run: |
         sudo apt update -y
         sudo apt install -y git wget unzip p7zip-full git
-        sudo bash setup_enviroment.sh
+        sudo apt install -y llvm \
+        aarch64-linux-gnu* \
+        arm-linux-gnu* \
+        clang \
 
     - name: 编译中
       run: |
