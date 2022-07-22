@@ -3,14 +3,41 @@ name: "安装环境"
 on:
   workflow_dispatch:
     inputs:
-
+      AUTHOR:
+        description: 'GitHub用户名'
+        required: true
+        default: 'PPKunOfficial'   
+      CHECKOUT_REPO:
+        description: '需要拉取的仓库'
+        required: true
+        default: 'xiaomi_kernel_dipper'
+      CHECKOUT_BRANCH:
+        description: '需要拉取的分支'
+        required: true
+        default: 'a11'
+      USEDEFCONFIG:
+        description: '使用的defconfig'
+        required: true
+        default: 'dipper_defconfig'
+      USE_LANZOU:
+        description: '是否上传到蓝奏云'
+        required: true
+        default: '0'
+      LANZOU_COOKIE_YLOGIN:
+        description: 'LANZOU_COOKIE_YLOGIN'
+        required: false
+        default: ''
+      LANZOU_COOKIE_PHPDISK:
+        description: 'LANZOU_COOKIE_PHPDISKINFO'
+        required: false
+        default: ''
 env:
   ARCHOSUB: 'arm64'
   KERNEL_DIR: 'kernel_source'
   COMPILE_THREAD: '$(nproc --all)' # $(nproc --all) cpu核心数
 
 jobs:
-  proton:
+  setup:
     name: 安装环境
     runs-on: ubuntu-latest
     steps:
@@ -19,6 +46,7 @@ jobs:
       with:
         version: latest
         platform: x64
+
     - name: Set up crossc
-      runs: |
+      run: |
         sudo bash setup_enviroment.sh
